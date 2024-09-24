@@ -9,9 +9,6 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('To Do List'),
       ),
-      body: const Center(
-        child: Text('Hello, World!'),
-      ),
     );
   }
 }
