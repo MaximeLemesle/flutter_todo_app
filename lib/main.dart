@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/pages/home.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/models/task_database.dart';
+import 'package:todo_app/pages/home_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  // initialize task database
+  WidgetsFlutterBinding.ensureInitialized();
+  await TaskDatabase.init();
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => TaskDatabase(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,7 +20,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'To Do List',
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
