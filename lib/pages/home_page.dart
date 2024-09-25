@@ -55,8 +55,40 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Update a task
+  void updateTask(Task task) {
+    textController.text = task.text;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Update task'),
+        content: TextField(controller: textController),
+        actions: [
+          // update button
+          MaterialButton(
+            onPressed: () {
+              // update task
+              context
+                  .read<TaskDatabase>()
+                  .updateTask(task.id, textController.text);
+
+              // clear text field
+              textController.clear();
+
+              // pop dialog box
+              Navigator.pop(context);
+            },
+            child: const Text('Update'),
+          )
+        ],
+      ),
+    );
+  }
 
   // Delete a task
+  void deleteTask(int id) {
+    context.read<TaskDatabase>().deleteTask(id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +108,23 @@ class _HomePageState extends State<HomePage> {
 
           // List tile for each task
           return ListTile(
-            title: Text(task.text),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                // Delete a task
-              },
-            ),
-          );
+              title: Text(task.text),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // update button
+                  IconButton(
+                    onPressed: () => updateTask(task),
+                    icon: const Icon(Icons.edit),
+                  ),
+
+                  // delete button
+                  IconButton(
+                    onPressed: () => deleteTask(task.id),
+                    icon: const Icon(Icons.delete),
+                  ),
+                ],
+              ));
         },
       ),
       floatingActionButton: FloatingActionButton(
