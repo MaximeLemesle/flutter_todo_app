@@ -8,4 +8,5 @@ part 'task.g.dart';
 class Task {
   Id id = Isar.autoIncrement;
   late String text;
+  late bool isChecked = false;
 }

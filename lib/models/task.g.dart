@@ -17,8 +17,13 @@ const TaskSchema = CollectionSchema(
   name: r'Task',
   id: 2998003626758701373,
   properties: {
-    r'text': PropertySchema(
+    r'isChecked': PropertySchema(
       id: 0,
+      name: r'isChecked',
+      type: IsarType.bool,
+    ),
+    r'text': PropertySchema(
+      id: 1,
       name: r'text',
       type: IsarType.string,
     )
@@ -53,7 +58,8 @@ void _taskSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.text);
+  writer.writeBool(offsets[0], object.isChecked);
+  writer.writeString(offsets[1], object.text);
 }
 
 Task _taskDeserialize(
@@ -64,7 +70,8 @@ Task _taskDeserialize(
 ) {
   final object = Task();
   object.id = id;
-  object.text = reader.readString(offsets[0]);
+  object.isChecked = reader.readBool(offsets[0]);
+  object.text = reader.readString(offsets[1]);
   return object;
 }
 
@@ -76,6 +83,8 @@ P _taskDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readBool(offset)) as P;
+    case 1:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -222,6 +231,15 @@ extension TaskQueryFilter on QueryBuilder<Task, Task, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Task, Task, QAfterFilterCondition> isCheckedEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isChecked',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<Task, Task, QAfterFilterCondition> textEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -356,6 +374,18 @@ extension TaskQueryObject on QueryBuilder<Task, Task, QFilterCondition> {}
 extension TaskQueryLinks on QueryBuilder<Task, Task, QFilterCondition> {}
 
 extension TaskQuerySortBy on QueryBuilder<Task, Task, QSortBy> {
+  QueryBuilder<Task, Task, QAfterSortBy> sortByIsChecked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isChecked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterSortBy> sortByIsCheckedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isChecked', Sort.desc);
+    });
+  }
+
   QueryBuilder<Task, Task, QAfterSortBy> sortByText() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'text', Sort.asc);
@@ -382,6 +412,18 @@ extension TaskQuerySortThenBy on QueryBuilder<Task, Task, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Task, Task, QAfterSortBy> thenByIsChecked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isChecked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterSortBy> thenByIsCheckedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isChecked', Sort.desc);
+    });
+  }
+
   QueryBuilder<Task, Task, QAfterSortBy> thenByText() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'text', Sort.asc);
@@ -396,6 +438,12 @@ extension TaskQuerySortThenBy on QueryBuilder<Task, Task, QSortThenBy> {
 }
 
 extension TaskQueryWhereDistinct on QueryBuilder<Task, Task, QDistinct> {
+  QueryBuilder<Task, Task, QDistinct> distinctByIsChecked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isChecked');
+    });
+  }
+
   QueryBuilder<Task, Task, QDistinct> distinctByText(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -408,6 +456,12 @@ extension TaskQueryProperty on QueryBuilder<Task, Task, QQueryProperty> {
   QueryBuilder<Task, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Task, bool, QQueryOperations> isCheckedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isChecked');
     });
   }
 

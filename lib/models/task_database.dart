@@ -36,10 +36,11 @@ class TaskDatabase extends ChangeNotifier {
   }
 
   // Update a task
-  Future<void> updateTask(int id, String newText) async {
+  Future<void> updateTask(int id, String newText, bool? isChecked) async {
     final existingNote = await _isar.tasks.get(id);
     if (existingNote != null) {
       existingNote.text = newText;
+      existingNote.isChecked = isChecked ?? false;
       await _isar.writeTxn(() => _isar.tasks.put(existingNote));
       await fetchTasks();
     }

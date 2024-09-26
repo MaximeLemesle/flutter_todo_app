@@ -25,14 +25,19 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        title: Text(
+          'Create new task',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
         content: TextField(
           controller: textController,
           decoration: InputDecoration(
             hintText: 'Enter task',
-            hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
-            filled: true,
-            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-            border: Theme.of(context).inputDecorationTheme.border,
+            hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
           ),
         ),
         actions: [
@@ -67,16 +72,21 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Update task'),
+        title: Text(
+          'Update task',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
         content: TextField(controller: textController),
         actions: [
           // update button
-          MaterialButton(
+          ElevatedButton(
             onPressed: () {
               // update task
               context
                   .read<TaskDatabase>()
-                  .updateTask(task.id, textController.text);
+                  .updateTask(task.id, textController.text, task.isChecked);
 
               // clear text field
               textController.clear();
@@ -152,30 +162,43 @@ class _HomePageState extends State<HomePage> {
                     margin:
                         const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                     child: ListTile(
+                      leading: Checkbox(
+                        value: task.isChecked,
+                        onChanged: (value) {
+                          context
+                              .read<TaskDatabase>()
+                              .updateTask(task.id, task.text, value);
+                        },
+                      ),
                       title: Text(
                         task.text,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
+                      onTap: () {
+                        context
+                            .read<TaskDatabase>()
+                            .updateTask(task.id, task.text, !task.isChecked);
+                      },
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           // update button
                           IconButton(
                             onPressed: () => updateTask(task),
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.edit,
                               size: 22,
-                              color: Colors.black54,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                           ),
 
                           // delete button
                           IconButton(
                             onPressed: () => deleteTask(task.id),
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.delete,
                               size: 22,
-                              color: Colors.black54,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                           ),
                         ],

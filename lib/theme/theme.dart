@@ -10,7 +10,7 @@ ThemeData lightTheme = ThemeData(
     surface: Colors.white,
     onBackground: Colors.black,
     onPrimary: Colors.white,
-    onSecondary: Colors.black,
+    onSecondary: Color(0xFF383838),
   ),
 
   // Text
@@ -45,15 +45,5 @@ ThemeData lightTheme = ThemeData(
         borderRadius: BorderRadius.circular(4),
       ),
     ),
-  ),
-
-  // Input
-  inputDecorationTheme: InputDecorationTheme(
-    filled: true,
-    fillColor: const Color(0xFFF7F7F7),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-    hintStyle: const TextStyle(color: Colors.black38),
   ),
 );
