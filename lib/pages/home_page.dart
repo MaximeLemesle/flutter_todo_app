@@ -27,11 +27,17 @@ class _HomePageState extends State<HomePage> {
       builder: (context) => AlertDialog(
         content: TextField(
           controller: textController,
-          decoration: const InputDecoration(hintText: 'Enter task'),
+          decoration: InputDecoration(
+            hintText: 'Enter task',
+            hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
+            filled: true,
+            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+            border: Theme.of(context).inputDecorationTheme.border,
+          ),
         ),
         actions: [
           // create button
-          MaterialButton(
+          ElevatedButton(
             onPressed: () {
               // add to database
               context.read<TaskDatabase>().createTask(textController.text);
@@ -90,6 +96,7 @@ class _HomePageState extends State<HomePage> {
     context.read<TaskDatabase>().deleteTask(id);
   }
 
+  // Home screen
   @override
   Widget build(BuildContext context) {
     // Task database
@@ -99,36 +106,91 @@ class _HomePageState extends State<HomePage> {
     List<Task> currentTasks = taskDatabase.currentTasks;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tasks')),
-      body: ListView.builder(
-        itemCount: currentTasks.length,
-        itemBuilder: (context, index) {
-          // Get the task
-          final task = currentTasks[index];
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Tasks list',
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
+          ],
+        ),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(.5),
+          child: Container(
+            height: .5,
+            color: Colors.black26,
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.background,
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: ListView.builder(
+                itemCount: currentTasks.length,
+                itemBuilder: (context, index) {
+                  // Get the task
+                  final task = currentTasks[index];
 
-          // List tile for each task
-          return ListTile(
-              title: Text(task.text),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // update button
-                  IconButton(
-                    onPressed: () => updateTask(task),
-                    icon: const Icon(Icons.edit),
-                  ),
+                  // List tile for each task
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: .5,
+                      ),
+                    ),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                    child: ListTile(
+                      title: Text(
+                        task.text,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // update button
+                          IconButton(
+                            onPressed: () => updateTask(task),
+                            icon: const Icon(
+                              Icons.edit,
+                              size: 22,
+                              color: Colors.black54,
+                            ),
+                          ),
 
-                  // delete button
-                  IconButton(
-                    onPressed: () => deleteTask(task.id),
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
-              ));
-        },
+                          // delete button
+                          IconButton(
+                            onPressed: () => deleteTask(task.id),
+                            icon: const Icon(
+                              Icons.delete,
+                              size: 22,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createTask,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add),
       ),
     );
