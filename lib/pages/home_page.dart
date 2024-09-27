@@ -169,6 +169,7 @@ class _HomePageState extends State<HomePage> {
                               .read<TaskDatabase>()
                               .updateTask(task.id, task.text, value);
                         },
+                        side: const BorderSide(width: 1),
                       ),
                       title: Text(
                         task.text,
